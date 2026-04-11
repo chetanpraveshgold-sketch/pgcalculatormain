@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pravesh Gold | Price Calculator</title>
+    <!-- Core Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { maroon: '#4d1616', cream: '#fdf8f0' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background-color: #fdf8f0;
+            background-image: 
+                radial-gradient(circle at 100% 0%, rgba(77, 22, 22, 0.02), transparent 40%),
+                radial-gradient(circle at 0% 100%, rgba(212, 175, 55, 0.03), transparent 40%);
+        }
+        .rectangular-tab {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .maroon-header {
+            background: #4d1616;
+            margin: 1.25rem 1.5rem 0.5rem;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .premium-input {
+            width: 100%;
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            appearance: none;
+            color: #000;
+        }
+        .premium-input:focus { border-color: #4d1616; box-shadow: 0 0 0 3px rgba(77, 22, 22, 0.05); outline: none; }
+        .result-container {
+            background: #f5e2a1;
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="font-sans text-stone-900 flex items-center justify-center p-4" 
+      x-data="calculatorApp()" x-init="init()">
+
+    <div class="rectangular-tab">
+        <div class="maroon-header">
+            <img src="Logo.png" alt="Pravesh Gold Logo" class="w-40 h-auto object-contain">
+        </div>
+        <p class="text-stone-400 text-[10px] font-black text-center uppercase tracking-widest mb-2">Auto Calculator</p>
+
+        <div class="px-6 pb-6 space-y-4 flex-grow flex flex-col justify-center">
+            
+            <!-- Success State -->
+            <template x-if="status === 'SUCCESS' && data">
+                <div x-cloak class="space-y-4">
+                    <div class="flex flex-col items-center space-y-1">
+                        <div class="bg-stone-50 border border-stone-100 rounded-full py-2 px-6 shadow-sm flex flex-col items-center">
+                            <p class="text-stone-500 text-[9px] font-bold uppercase tracking-widest leading-none mb-1">Rates Updated</p>
+                            <p class="text-[11px] font-bold text-black leading-tight">
+                                <span x-text="data.date"></span> | <span x-text="data.time"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-stone-700 ml-1">Select Karat</label>
+                            <div class="relative">
+                                <select x-model="selectedKarat" class="premium-input">
+                                    <option value="22KT">22KT</option>
+                                    <option value="18KT">18KT</option>
+                                    <option value="24KT">24KT (Gold Coins)</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                            </div>
+                        </div>
+
+                        <div x-show="selectedKarat !== '24KT'" class="space-y-1">
+                            <label class="block text-xs font-bold text-stone-700 ml-1">Weight (grams)</label>
+                            <input type="number" placeholder="e.g. 10.250" x-model="weight" class="premium-input" step="0.001">
+                        </div>
+
+                        <div x-show="selectedKarat !== '24KT'" class="space-y-1">
+                            <label class="block text-xs font-bold text-stone-700 ml-1">Making Type</label>
+                            <div class="relative">
+                                <select x-model="makingType" class="premium-input">
+                                    <template x-for="type in Object.keys(MAKING_RANGES)">
+                                        <option :value="type" x-text="type"></option>
+                                    </template>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+                            </div>
+                        </div>
+
+                        <div x-show="selectedKarat === '24KT'" class="space-y-2">
+                            <label class="block text-xs font-bold text-stone-700 ml-1">Coin Weight</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <template x-for="w in COIN_WEIGHTS">
+                                    <button @click="coinWeight = w" 
+                                            :class="coinWeight === w ? 'bg-maroon border-maroon text-white scale-105' : 'bg-white border-stone-200 text-stone-500'"
+                                            class="py-2.5 rounded-xl border font-black text-[10px] transition-all"
+                                            x-text="w + 'g'"></button>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <div class="result-container space-y-0.5 shadow-sm">
+                                <p class="text-stone-500 text-[10px] font-bold uppercase tracking-widest">Estimated Price</p>
+                                <template x-if="selectedKarat !== '24KT'">
+                                    <h2 class="text-xl font-black text-stone-900" x-text="jewelleryPriceString() || '...'"></h2>
+                                </template>
+                                <template x-if="selectedKarat === '24KT'">
+                                    <h2 class="text-xl font-black text-stone-900" x-text="coinPriceString()"></h2>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template x-if="status === 'ERROR'">
+                <div class="py-12 flex flex-col items-center justify-center space-y-4 text-center">
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-stone-800 font-bold text-sm">Sync Failed</p>
+                        <p class="text-stone-400 text-[10px] mt-1 px-4 leading-tight" x-text="errorMessage"></p>
+                    </div>
+                    <button @click="fetchRates()" class="bg-maroon text-white px-8 py-3 rounded-xl font-bold text-xs shadow-lg active:scale-95 transition-all">Retry Live Sync</button>
+                </div>
+            </template>
+
+            <!-- Loading State -->
+            <template x-if="status === 'INITIALIZING'">
+                <div class="py-12 flex flex-col items-center justify-center space-y-4">
+                    <svg class="animate-spin h-10 w-10 text-maroon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle class="opacity-10" cx="12" cy="12" r="10" stroke-width="4"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <p class="text-stone-400 text-xs font-black uppercase tracking-widest leading-none mt-2">Establishing Live Sync...</p>
+                </div>
+            </template>
+        </div>
+
+        <footer class="bg-stone-50 border-t border-stone-100 p-4 text-center">
+            <div class="text-[8.5px] font-bold text-stone-400 leading-tight space-y-1">
+                <p>Prices shown are approximate. Final billing will be done at the showroom.</p>
+                <p>3% taxes included in above calculation.</p>
+                <p>Gold coins include 3% GST and making charges.</p>
+                <p class="text-maroon uppercase tracking-tighter pt-1">Pravesh Gold, Kalyan West.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const MAKING_RANGES = { Classic: { min: 0.09, max: 0.11 }, Antique: { min: 0.10, max: 0.13 }, Premium: { min: 0.13, max: 0.15 }, Italian: { min: 0.17, max: 0.19 } };
+        const COIN_WEIGHTS = [0.5, 1, 2, 5, 10, 20, 50];
+        const GST_RATE = 0.03;
+        const COIN_MAKING_RATE = 0.03;
+
+        function calculatorApp() {
+            return {
+                status: 'INITIALIZING',
+                data: null,
+                errorMessage: '',
+                selectedKarat: '22KT',
+                weight: '',
+                makingType: 'Classic',
+                coinWeight: 1,
+
+                init() { this.fetchRates(); },
+
+                async fetchRates() {
+                    this.status = 'INITIALIZING';
+                    this.errorMessage = '';
+                    try {
+                        const res = await fetch('/api/rates');
+                        const body = await res.json();
+                        if (!res.ok) {
+                            this.errorMessage = body.error || 'Connection Failed';
+                            throw new Error(this.errorMessage);
+                        }
+                        this.data = body;
+                        this.status = 'SUCCESS';
+                    } catch (err) {
+                        if (!this.errorMessage) this.errorMessage = "Unable to reach Google Sheets. Please refresh.";
+                        this.status = 'ERROR';
+                    }
+                },
+
+                formatCurrency(val) {
+                    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Math.round(val));
+                },
+
+                jewelleryPriceString() {
+                    const w = parseFloat(this.weight);
+                    if (isNaN(w) || w <= 0) return null;
+                    const r = this.selectedKarat === '22KT' ? this.data.rates.rate_22k : this.data.rates.rate_18k;
+                    const b = w * r;
+                    const low = (b + (b * MAKING_RANGES[this.makingType].min)) * (1 + GST_RATE);
+                    const high = (b + (b * MAKING_RANGES[this.makingType].max)) * (1 + GST_RATE);
+                    return this.formatCurrency(low) + ' – ' + this.formatCurrency(high);
+                },
+
+                coinPriceString() {
+                    const b = this.coinWeight * this.data.rates.rate_24k;
+                    const f = (b + (b * COIN_MAKING_RATE)) * (1 + GST_RATE);
+                    return this.formatCurrency(f);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
