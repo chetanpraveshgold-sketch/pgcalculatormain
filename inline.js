@@ -4,8 +4,8 @@ let index = fs.readFileSync('index.html', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
 const js = fs.readFileSync('app.js', 'utf8');
 
-// Replace stylesheet link with inline style
-index = index.replace(/<link[^>]*href="(?:\.\/)?styles\.css"[^>]*>/, `<style>\n${css}\n</style>`);
+// Replace stylesheet link or existing style block with inline style
+index = index.replace(/<style>[\s\S]*?<\/style>|<link[^>]*href="(?:\.\/)?styles\.css"[^>]*>/, `<style>\n${css}\n</style>`);
 
 // Replace app.js script tag with inline script
 index = index.replace(/<script[^>]*src="app\.js"[^>]*><\/script>/, `<script>\n${js}\n</script>`);
