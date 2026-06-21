@@ -2,7 +2,7 @@
   "name": "calculator-pg",
   "version": "1.0.0",
   "scripts": {
-    "build": "tailwindcss -i ./input.css -o ./styles.css --minify",
+    "build": "echo \"Built locally, skipping Vercel build\"",
     "dev": "tailwindcss -i ./input.css -o ./styles.css --watch"
   },
   "dependencies": {
