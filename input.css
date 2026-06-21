@@ -20,9 +20,9 @@ body {
 
 .rectangular-tab {
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 1.75rem;
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 0 20px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    border-radius: 2rem; /* Apple-style massive rounding */
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(0, 0, 0, 0.02);
     width: 100%;
     max-width: 400px;
     display: flex;
@@ -43,22 +43,21 @@ body {
 
 .premium-input {
     width: 100%;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.85rem;
-    padding: 0.75rem 1rem;
-    font-size: 0.9375rem;
+    background: #f4f4f5; /* Soft iOS gray */
+    border: 2px solid transparent;
+    border-radius: 1rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 16px; /* 16px strictly prevents iOS zoom */
     font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
     appearance: none;
-    color: #1e293b;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.01);
+    color: #1c1c1e;
 }
 
 .premium-input:focus {
     border-color: #4d1616;
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(77, 22, 22, 0.08);
+    box-shadow: 0 4px 12px rgba(77, 22, 22, 0.08);
     outline: none;
 }
 

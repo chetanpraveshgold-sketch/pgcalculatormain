@@ -49,9 +49,9 @@
 
                     <div class="space-y-2">
                         <div class="space-y-1">
-                            <label class="block text-[10px] font-bold text-stone-700 ml-1">Select Karat</label>
+                            <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider ml-1 mb-1.5">Select Karat</label>
                             <div class="relative" x-data="{ open: false, options: [{value: '22KT', label: '22KT'}, {value: '18KT', label: '18KT'}, {value: '24KT', label: '24KT (Gold Coins)'}, {value: 'SILVER', label: 'Silver (Coin)'}] }" @click.outside="open = false">
-                                <button type="button" @click="open = !open" class="premium-input text-left flex justify-between items-center w-full focus:ring-4 focus:ring-maroon/10 focus:border-maroon">
+                                <button type="button" @click="optHaptic(); open = !open" class="premium-input text-left flex justify-between items-center w-full focus:ring-4 focus:ring-maroon/10 focus:border-maroon">
                                     <span x-text="options.find(o => o.value === selectedKarat)?.label || 'Select Karat'"></span>
                                     <svg class="w-4 h-4 opacity-40 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
@@ -67,7 +67,7 @@
                                      class="absolute z-50 w-full mt-2 bg-white border border-stone-100 rounded-xl shadow-xl overflow-hidden py-1">
                                     <template x-for="option in options" :key="option.value">
                                         <button type="button" 
-                                                @click="selectedKarat = option.value; open = false" 
+                                                @click="optHaptic(); selectedKarat = option.value; open = false" 
                                                 class="w-full text-left px-4 py-2.5 text-[13.5px] font-semibold transition-colors duration-150 flex items-center justify-between"
                                                 :class="selectedKarat === option.value ? 'bg-maroon/5 text-maroon' : 'text-stone-700 hover:bg-stone-50'">
                                             <span x-text="option.label"></span>
@@ -79,14 +79,14 @@
                         </div>
 
                         <div x-show="selectedKarat !== '24KT' && selectedKarat !== 'SILVER'" class="space-y-1">
-                            <label class="block text-[10px] font-bold text-stone-700 ml-1">Weight (grams)</label>
+                            <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider ml-1 mb-1.5">Weight (grams)</label>
                             <input type="text" inputmode="decimal" placeholder="e.g. 10.250" x-model="weight" class="premium-input">
                         </div>
 
                         <div x-show="selectedKarat !== '24KT' && selectedKarat !== 'SILVER'" class="space-y-1">
-                            <label class="block text-[10px] font-bold text-stone-700 ml-1">Making Type</label>
+                            <label class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider ml-1 mb-1.5">Making Type</label>
                             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                                <button type="button" @click="open = !open" class="premium-input text-left flex justify-between items-center w-full focus:ring-4 focus:ring-maroon/10 focus:border-maroon">
+                                <button type="button" @click="optHaptic(); open = !open" class="premium-input text-left flex justify-between items-center w-full focus:ring-4 focus:ring-maroon/10 focus:border-maroon">
                                     <span x-text="makingType"></span>
                                     <svg class="w-4 h-4 opacity-40 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
@@ -102,7 +102,7 @@
                                      class="absolute z-50 w-full mt-2 bg-white border border-stone-100 rounded-xl shadow-xl overflow-hidden py-1">
                                     <template x-for="type in Object.keys(MAKING_RANGES)">
                                         <button type="button" 
-                                                @click="makingType = type; open = false" 
+                                                @click="optHaptic(); makingType = type; open = false" 
                                                 class="w-full text-left px-4 py-2.5 text-[13.5px] font-semibold transition-colors duration-150 flex items-center justify-between"
                                                 :class="makingType === type ? 'bg-maroon/5 text-maroon' : 'text-stone-700 hover:bg-stone-50'">
                                             <span x-text="type"></span>
@@ -114,24 +114,24 @@
                         </div>
 
                         <div x-show="selectedKarat === '24KT'" class="space-y-1.5">
-                            <label class="block text-[10px] font-bold text-stone-700 ml-1">Coin Weight</label>
+                            <label class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider ml-1">Coin Weight</label>
                             <div class="grid grid-cols-4 gap-2">
                                 <template x-for="w in COIN_WEIGHTS">
-                                    <button @click="coinWeight = w"
+                                    <button type="button" @click="optHaptic(); coinWeight = w"
                                         :class="coinWeight === w ? 'bg-maroon border-maroon text-white scale-105 shadow-md' : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100 hover:border-stone-300'"
-                                        class="py-2.5 rounded-xl border font-black text-[10px] transition-all duration-300 active:scale-95"
+                                        class="py-2.5 rounded-full border font-black text-[10px] transition-all duration-300 active:scale-95"
                                         x-text="w + 'g'"></button>
                                 </template>
                             </div>
                         </div>
 
                         <div x-show="selectedKarat === 'SILVER'" class="space-y-1.5">
-                            <label class="block text-[10px] font-bold text-stone-700 ml-1">Silver Coin Weight</label>
+                            <label class="block text-[11px] font-bold text-stone-500 uppercase tracking-wider ml-1">Silver Coin Weight</label>
                             <div class="grid grid-cols-4 gap-2">
                                 <template x-for="w in SILVER_WEIGHTS">
-                                    <button @click="silverWeight = w"
+                                    <button type="button" @click="optHaptic(); silverWeight = w"
                                         :class="silverWeight === w ? 'bg-maroon border-maroon text-white scale-105 shadow-md' : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100 hover:border-stone-300'"
-                                        class="py-2.5 rounded-xl border font-black text-[10px] transition-all duration-300 active:scale-95"
+                                        class="py-2.5 rounded-full border font-black text-[10px] transition-all duration-300 active:scale-95"
                                         x-text="w + 'g'"></button>
                                 </template>
                             </div>
@@ -139,8 +139,7 @@
 
                         <div class="pt-2 pb-6">
                             <div class="result-container space-y-0 shadow-sm">
-                                <p class="text-stone-500 text-[9px] font-bold uppercase tracking-widest">Estimated Price
-                                </p>
+                                <p class="text-[11px] font-bold text-stone-500 uppercase tracking-[0.2em] mb-1">Estimated Price</p>
                                 <template x-if="selectedKarat !== '24KT' && selectedKarat !== 'SILVER'">
                                     <h2 class="text-2xl font-black text-stone-900 transition-all duration-300 ease-out"
                                         x-text="jewelleryPriceString() || '...'"></h2>
@@ -154,9 +153,9 @@
 
                                 <!-- WhatsApp CTA Button -->
                                 <template x-if="getWhatsappUrl()">
-                                    <div class="pt-4 animate-fade-in">
-                                        <a :href="getWhatsappUrl()" target="_blank"
-                                           class="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#25D366] to-[#20B058] hover:from-[#20B058] hover:to-[#128C7E] text-white text-[12px] font-extrabold tracking-wide py-3.5 px-4 rounded-xl shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] hover:shadow-[0_6px_20px_rgba(37,211,102,0.23)] transition-all duration-300 transform active:scale-95">
+                                    <div class="pt-4 animate-fade-in flex flex-col gap-3">
+                                        <a :href="getWhatsappUrl()" target="_blank" @click="optHaptic()"
+                                           class="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#25D366] to-[#20B058] hover:from-[#20B058] hover:to-[#128C7E] text-white text-[13px] font-extrabold tracking-wide py-3.5 px-4 rounded-full shadow-[0_8px_16px_rgba(37,211,102,0.3)] hover:shadow-[0_12px_24px_rgba(37,211,102,0.4)] transition-all duration-300 transform active:scale-[0.98]">
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                                             Send Quotation
                                         </a>
