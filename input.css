@@ -8,10 +8,6 @@
 
 html,
 body {
-    min-height: 100%;
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
     background-color: #fdf8f0;
     background-image:
         radial-gradient(circle at 100% 0%, rgba(77, 22, 22, 0.02), transparent 40%),
