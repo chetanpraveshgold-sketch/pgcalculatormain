@@ -18,10 +18,12 @@
         rel="stylesheet">
 </head>
 
-<body class="font-sans text-stone-900 flex flex-col items-center justify-start sm:justify-center p-4 min-h-screen"
+<body class="font-sans text-stone-900"
     x-data="calculatorApp()" x-init="init()">
 
-    <div class="rectangular-tab">
+    <!-- Main Wrapper to guarantee scrolling -->
+    <div class="w-full min-h-screen flex flex-col items-center justify-start sm:justify-center p-4 pb-12">
+        <div class="rectangular-tab">
         <div class="maroon-header relative overflow-hidden">
             <picture class="flex items-center justify-center">
                 <source srcset="praveshgoldlogopng.webp" type="image/webp">
@@ -242,6 +244,7 @@
             </template>
         </footer>
     </div>
+    </div> <!-- Close the wrapper -->
     <script>
 const MAKING_RANGES = { Classic: { min: 0.09, max: 0.11 }, Antique: { min: 0.10, max: 0.13 }, Premium: { min: 0.13, max: 0.15 }, Italian: { min: 0.17, max: 0.19 } };
 const COIN_WEIGHTS = [0.5, 1, 2, 5, 10, 20, 50];
