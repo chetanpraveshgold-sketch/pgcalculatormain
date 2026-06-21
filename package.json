@@ -4,12 +4,5 @@
   "scripts": {
     "build": "echo \"Built locally, skipping Vercel build\"",
     "dev": "tailwindcss -i ./input.css -o ./styles.css --watch"
-  },
-  "dependencies": {
-    "sharp": "^0.35.2",
-    "tailwindcss": "^3.4.4"
-  },
-  "devDependencies": {
-    "javascript-obfuscator": "^5.4.3"
   }
 }
