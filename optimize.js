@@ -2,14 +2,14 @@ const sharp = require('sharp');
 const fs = require('fs');
 
 async function processImage() {
-  const meta = await sharp('Logo.png').metadata();
+  const meta = await sharp('praveshgoldlogopng.png').metadata();
   console.log(`Dimensions: ${meta.width}x${meta.height}`);
   
-  await sharp('Logo.png')
+  await sharp('praveshgoldlogopng.png')
     .webp({ quality: 80 })
-    .toFile('Logo.webp');
+    .toFile('praveshgoldlogopng.webp');
     
-  console.log('Successfully created Logo.webp');
+  console.log('Successfully created praveshgoldlogopng.webp');
 }
 
 processImage().catch(console.error);

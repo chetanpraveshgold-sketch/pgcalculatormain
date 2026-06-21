@@ -21,7 +21,35 @@ window.calculatorApp = function calculatorApp() {
             }
         },
 
-        init() { this.fetchRates(); },
+        init() {
+            this.fetchRates();
+            
+            this.$watch('weight', (value) => {
+                if (!value) return;
+                
+                // 1. Remove any non-numeric/non-decimal characters
+                let clean = value.replace(/[^0-9.]/g, '');
+                
+                // 2. Prevent multiple decimals (e.g. "1.2.3" -> "1.23")
+                const parts = clean.split('.');
+                if (parts.length > 2) {
+                    clean = parts[0] + '.' + parts.slice(1).join('');
+                }
+                
+                // 3 & 4. Limit integer part to 3 digits (max 999), and decimal part to 3 digits
+                if (clean.includes('.')) {
+                    const [intPart, decPart] = clean.split('.');
+                    clean = `${intPart.slice(0, 3)}.${decPart.slice(0, 3)}`;
+                } else {
+                    clean = clean.slice(0, 3);
+                }
+                
+                // Update if changed
+                if (value !== clean) {
+                    this.weight = clean;
+                }
+            });
+        },
 
         async fetchRates() {
             this.status = 'INITIALIZING';
@@ -39,7 +67,6 @@ window.calculatorApp = function calculatorApp() {
                 if (!res.ok) throw new Error('API_OFFLINE');
                 const body = await res.json();
 
-                // If silver rate is missing, force direct fallback
                 if (this.selectedKarat === 'SILVER' && (!body.rates || !body.rates.rate_silver)) {
                     throw new Error('SILVER_DATA_INCOMPLETE');
                 }
@@ -54,7 +81,6 @@ window.calculatorApp = function calculatorApp() {
                     const res = await fetch(GOOGLE_URL, { redirect: 'follow' });
                     const raw = await res.json();
 
-                    // Smart Sync: Detect which cell is the price and which is the date
                     let silverRate = clean(raw.rate_silver || raw.sheet_time);
                     let dateVal = raw.sheet_date;
 
@@ -133,6 +159,11 @@ window.calculatorApp = function calculatorApp() {
             }
 
             const text = `Hello Pravesh Gold!\nI used your online calculator and would like to inquire about the following:\n\n${details}\nEstimated Price: ${price}\n\nCan you please assist me further?`;
+            return `https://wa.me/918291679495?text=${encodeURIComponent(text)}`;
+        },
+
+        getFailureWhatsappUrl() {
+            const text = "Hi Pravesh Gold Team,\n\nCalculator par live gold rate load nahi ho raha hai.\n\nPlease mujhe today’s gold rate aur jewellery quotation details share kijiye.";
             return `https://wa.me/918291679495?text=${encodeURIComponent(text)}`;
         }
     }

@@ -12,6 +12,7 @@ body {
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
+    overscroll-behavior-y: none; /* Prevents iOS elastic bounce for a native app feel */
     background-color: #fdf8f0;
     background-image:
         radial-gradient(circle at 100% 0%, rgba(77, 22, 22, 0.02), transparent 40%),
@@ -32,13 +33,13 @@ body {
 
 .maroon-header {
     background: #4d1616;
-    margin: 0.75rem 1.5rem 0.25rem;
-    border-radius: 1rem;
-    padding: 0.5rem;
+    margin: 0; /* Make it edge-to-edge */
+    border-radius: 2rem 2rem 0 0; /* Match the card's top corners exactly */
+    padding: 3rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+    width: 100%;
 }
 
 .premium-input {
