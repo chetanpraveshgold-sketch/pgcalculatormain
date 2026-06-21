@@ -15,6 +15,12 @@ window.calculatorApp = function calculatorApp() {
         coinWeight: 1,
         silverWeight: 10,
 
+        optHaptic() {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                try { navigator.vibrate(50); } catch (e) {}
+            }
+        },
+
         init() { this.fetchRates(); },
 
         async fetchRates() {
@@ -82,7 +88,9 @@ window.calculatorApp = function calculatorApp() {
 
         jewelleryPriceString() {
             if (!this.data || !this.weight) return null;
-            const w = parseFloat(this.weight);
+            let val = String(this.weight).replace(/,/g, '.').trim();
+            if (val === '.' || val === '-' || val === '') return null;
+            const w = parseFloat(val);
             if (isNaN(w) || w <= 0) return null;
             const r = this.selectedKarat === '18KT' ? this.data.rates.rate_18k : this.data.rates.rate_22k;
             const making = MAKING_RANGES[this.makingType];
@@ -104,6 +112,28 @@ window.calculatorApp = function calculatorApp() {
             const b = this.silverWeight * r;
             const f = b * (1 + GST_RATE);
             return isNaN(f) ? '...' : this.formatCurrency(f);
+        },
+
+        getWhatsappUrl() {
+            let price = '';
+            let details = '';
+            
+            if (this.selectedKarat === '24KT') {
+                price = this.coinPriceString();
+                if (price === '...' || !price) return null;
+                details = `Item: 24KT Gold Coin\nWeight: ${this.coinWeight}g`;
+            } else if (this.selectedKarat === 'SILVER') {
+                price = this.silverPriceString();
+                if (price === '...' || !price) return null;
+                details = `Item: Silver Coin\nWeight: ${this.silverWeight}g`;
+            } else {
+                price = this.jewelleryPriceString();
+                if (price === '...' || !price) return null;
+                details = `Karat: ${this.selectedKarat}\nWeight: ${this.weight}g\nMaking Type: ${this.makingType}`;
+            }
+
+            const text = `Hello Pravesh Gold!\nI used your online calculator and would like to inquire about the following:\n\n${details}\nEstimated Price: ${price}\n\nCan you please assist me further?`;
+            return `https://wa.me/918291679495?text=${encodeURIComponent(text)}`;
         }
     }
 }

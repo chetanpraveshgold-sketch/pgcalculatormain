@@ -76,6 +76,11 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+button, select, input {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
 /* Hide spinners for Firefox */
 input[type=number] {
     -moz-appearance: textfield;
