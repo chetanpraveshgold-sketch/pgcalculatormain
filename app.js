@@ -158,7 +158,7 @@ window.calculatorApp = function calculatorApp() {
                 details = `Karat: ${this.selectedKarat}\nWeight: ${this.weight}g\nMaking Type: ${this.makingType}`;
             }
 
-            const text = `Hello Pravesh Gold!\nI used your online calculator and would like to inquire about the following:\n\n${details}\nEstimated Price: ${price}\n\nCan you please assist me further?`;
+            const text = `Hello Pravesh Gold!\nMaine aapke online calculator se ye estimate nikala hai, mujhe iski inquiry karni hai:\n\n${details}\nEstimated Price: ${price}\n\nPlease mujhe iski aage ki details share kijiye.`;
             return `https://wa.me/918291679495?text=${encodeURIComponent(text)}`;
         },
 
