@@ -158,8 +158,7 @@ window.calculatorApp = function calculatorApp() {
                 details = `Karat: ${this.selectedKarat}\nWeight: ${this.weight}g\nMaking Type: ${this.makingType}`;
             }
 
-            const text = `Hi Pravesh Gold Team,\n\nMaine online calculator par ye estimate dekha hai. Mujhe iski inquiry karni hai:\n\n${details}\nEstimated Price: ${price}\n\nPlease mujhe iski aage ki details share kijiye.`;
-            return `https://wa.me/918291679495?text=${encodeURIComponent(text)}`;
+            return `https://wa.me/918291679495`;
         },
 
         getFailureWhatsappUrl() {
