@@ -71,6 +71,8 @@ window.calculatorApp = function calculatorApp() {
                     throw new Error('SILVER_DATA_INCOMPLETE');
                 }
 
+                await new Promise(resolve => setTimeout(resolve, 600)); // Ensure skeleton loading is visible
+
                 this.data = body;
                 this.status = 'SUCCESS';
                 console.log('✅ Sync: API (Live)');
@@ -98,6 +100,9 @@ window.calculatorApp = function calculatorApp() {
                             rate_silver: silverRate
                         }
                     };
+                    
+                    await new Promise(resolve => setTimeout(resolve, 600)); // Ensure skeleton loading is visible
+                    
                     this.status = 'SUCCESS';
                     console.log('✅ Sync: Direct GSheet (Silver: ' + this.data.rates.rate_silver + ')');
                 } catch (directErr) {
