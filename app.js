@@ -140,7 +140,7 @@ window.calculatorApp = function calculatorApp() {
             return isNaN(f) ? '...' : this.formatCurrency(f);
         },
 
-        getWhatsappUrl() {
+        getWhatsappUrl(message = '') {
             let price = '';
             let details = '';
             
@@ -158,7 +158,8 @@ window.calculatorApp = function calculatorApp() {
                 details = `Karat: ${this.selectedKarat}\nWeight: ${this.weight}g\nMaking Type: ${this.makingType}`;
             }
 
-            return `https://wa.me/918291679495`;
+            let text = message;
+            return `https://wa.me/918291679495${text ? '?text=' + encodeURIComponent(text) : ''}`;
         },
 
         getFailureWhatsappUrl() {
