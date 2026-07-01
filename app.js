@@ -22,7 +22,7 @@ window.calculatorApp = function calculatorApp() {
                 try { navigator.vibrate(20); } catch (e) {}
             }
             
-            // Very soft, gentle UI tap (pure sine wave, no harshness)
+            // Soft UI tap (Made louder for phone speakers)
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (AudioContext) {
@@ -33,13 +33,14 @@ window.calculatorApp = function calculatorApp() {
                     const osc = ctx.createOscillator();
                     const gainNode = ctx.createGain();
                     
-                    osc.type = 'sine'; // Pure, soft tone
-                    osc.frequency.setValueAtTime(350, ctx.currentTime); // Low pitch
-                    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.04); // Gentle drop
+                    osc.type = 'sine'; 
+                    // Higher pitch so small phone speakers can actually play it
+                    osc.frequency.setValueAtTime(600, ctx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04); 
                     
-                    // Extremely soft volume envelope
+                    // Louder volume envelope (1.0 instead of 0.05)
                     gainNode.gain.setValueAtTime(0, ctx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.005); // Very quiet
+                    gainNode.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.005); 
                     gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
                     
                     osc.connect(gainNode);
