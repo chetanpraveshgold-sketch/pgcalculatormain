@@ -22,7 +22,7 @@ window.calculatorApp = function calculatorApp() {
                 try { navigator.vibrate(20); } catch (e) {}
             }
             
-            // Soft UI tap (Made louder for phone speakers)
+            // Smooth, pleasant, soft UI "bloop" (no sharp clicking)
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (AudioContext) {
@@ -33,21 +33,22 @@ window.calculatorApp = function calculatorApp() {
                     const osc = ctx.createOscillator();
                     const gainNode = ctx.createGain();
                     
-                    osc.type = 'sine'; 
-                    // Higher pitch so small phone speakers can actually play it
-                    osc.frequency.setValueAtTime(600, ctx.currentTime); 
-                    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.04); 
+                    osc.type = 'sine'; // Pure smooth tone
                     
-                    // Louder volume envelope (1.0 instead of 0.05)
+                    // Very gentle pitch drop for a "bloop" or "droplet" effect
+                    osc.frequency.setValueAtTime(500, ctx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.05); 
+                    
+                    // Smooth envelope to prevent any harsh clicking at the start
                     gainNode.gain.setValueAtTime(0, ctx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.005); 
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+                    gainNode.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.015); // Smooth fade in (no click)
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06); // Smooth fade out
                     
                     osc.connect(gainNode);
                     gainNode.connect(ctx.destination);
                     
                     osc.start(ctx.currentTime);
-                    osc.stop(ctx.currentTime + 0.05);
+                    osc.stop(ctx.currentTime + 0.07);
                 }
             } catch (e) {}
         },
