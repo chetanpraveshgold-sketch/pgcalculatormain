@@ -6,80 +6,251 @@
     display: none !important;
 }
 
-html,
-body {
-    background-color: #fdf8f0;
-    background-image:
-        radial-gradient(circle at 100% 0%, rgba(77, 22, 22, 0.02), transparent 40%),
-        radial-gradient(circle at 0% 100%, rgba(212, 175, 55, 0.03), transparent 40%);
+/* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
 
+::-webkit-scrollbar-track {
+    background: #1a0808;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.6);
+}
+
+/* Base Body - Creamy Beige Background (Reference) */
+body {
+    background-color: #faf6f0;
+    color: #391111;
+    overflow-x: hidden;
+}
+
+/* Clean White Card Container */
 .rectangular-tab {
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    border-radius: 2rem; /* Apple-style massive rounding */
-    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(0, 0, 0, 0.02);
+    border-radius: 1.75rem;
+    box-shadow: 0 8px 36px -8px rgba(0, 0, 0, 0.05);
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
     margin: 1rem 0;
+    overflow: hidden;
 }
 
+/* Header Area */
 .maroon-header {
-    background: #4d1616;
-    margin: 0; /* Make it edge-to-edge */
-    border-radius: 2rem 2rem 0 0; /* Match the card's top corners exactly */
-    padding: 3rem 1rem;
+    background: #391111; /* Solid maroon from screenshot */
+    padding: 1rem 1rem 0.5rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
+    position: relative;
 }
 
+/* Premium Inputs - Apple UI Style */
 .premium-input {
     width: 100%;
-    background: #f4f4f5; /* Soft iOS gray */
-    border: 2px solid transparent;
-    border-radius: 1rem;
-    padding: 0.875rem 1.25rem;
-    font-size: 16px; /* 16px strictly prevents iOS zoom */
+    background: #f7f7f9;
+    border: none;
+    border-radius: 1.25rem;
+    padding: 1.1rem 1.25rem;
+    font-size: 16px;
     font-weight: 600;
-    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.25s ease;
     appearance: none;
-    color: #1c1c1e;
+    color: #1c1917;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+}
+
+.premium-input:hover {
+    background: #f0f0f3;
 }
 
 .premium-input:focus {
-    border-color: #4d1616;
     background: #ffffff;
-    box-shadow: 0 4px 12px rgba(77, 22, 22, 0.08);
+    box-shadow: inset 0 0 0 1.5px #391111, 0 8px 25px rgba(0, 0, 0, 0.04);
     outline: none;
 }
 
-.result-container {
-    background: linear-gradient(135deg, #fefce8 0%, #f5e2a1 100%);
-    border-radius: 1.25rem;
-    padding: 1.25rem 0.75rem;
-    text-align: center;
-    margin-top: 0.5rem;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.15), 0 4px 10px -5px rgba(212, 175, 55, 0.1);
+.premium-input::placeholder {
+    color: #a8a29e;
+    font-weight: 500;
 }
 
-/* Hide spinners for Chrome, Safari, Edge, Opera */
+/* Weights Grid - Light Theme */
+.weight-btn {
+    background: #f9fafb;
+    border: 1px solid #f3f4f6;
+    color: #57534e;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, box-shadow, background-color, color;
+}
+
+.weight-btn:hover {
+    background: #e5e7eb;
+    border-color: #d1d5db;
+    color: #1c1917;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.weight-btn:active {
+    transform: scale(0.95) !important;
+}
+
+.weight-btn.active {
+    background: #391111; /* Maroon background for selected */
+    border-color: transparent;
+    color: #ffffff;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(57, 17, 17, 0.2);
+}
+
+/* Result Container - Apple UI Pale Gold */
+.result-container {
+    background: #fcf6dc;
+    border-radius: 1.5rem;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    margin-top: 1rem;
+    border: 1px solid #f2e7b8;
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.text-gold {
+    background: linear-gradient(to right, #F5E2A1, #D4AF37, #AA8C2C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #D4AF37;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-button, select, input {
+button,
+select,
+input {
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Hide spinners for Firefox */
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+/* Premium WhatsApp Button Animations */
+@keyframes shimmer-sweep {
+    0% {
+        transform: translateX(-150%) skewX(-25deg);
+    }
+
+    100% {
+        transform: translateX(300%) skewX(-25deg);
+    }
+}
+
+@keyframes premium-float {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px -2px rgba(37, 211, 102, 0.15);
+        transform: translateY(0);
+    }
+
+    50% {
+        box-shadow: 0 12px 24px -2px rgba(37, 211, 102, 0.45);
+        transform: translateY(-5px);
+    }
+}
+
+.btn-shine {
+    position: relative;
+    overflow: hidden;
+    animation: premium-float 3s ease-in-out infinite;
+    transform-origin: center;
+    will-change: transform, box-shadow;
+}
+
+.btn-shine:hover {
+    animation-play-state: paused;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 24px -2px rgba(37, 211, 102, 0.5) !important;
+}
+
+/* Glass Reflection */
+.btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer-sweep 3.5s infinite linear;
+    pointer-events: none;
+}
+
+/* Stagger the physical float so they wave gently */
+.btn-shine:nth-child(2) {
+    animation-delay: 0s;
+}
+
+.btn-shine:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.btn-shine:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+/* Stagger the reflection sweep */
+.btn-shine:nth-child(2)::after {
+    animation-delay: 0s;
+}
+
+.btn-shine:nth-child(3)::after {
+    animation-delay: 0.5s;
+}
+
+.btn-shine:nth-child(4)::after {
+    animation-delay: 1.0s;
+}
+
+.btn-whatsapp {
+    background: linear-gradient(135deg, #25D366, #1da851);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Glass Gel Top Highlight */
+.btn-whatsapp::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), transparent);
+    border-radius: 0.75rem 0.75rem 0 0;
+    pointer-events: none;
+}
+
+.btn-whatsapp:active {
+    transform: translateY(1px) scale(0.96) !important;
+    background: linear-gradient(135deg, #1fae52, #168641);
 }

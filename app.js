@@ -14,6 +14,7 @@ window.calculatorApp = function calculatorApp() {
         makingType: 'Classic',
         coinWeight: 1,
         silverWeight: 10,
+        showMakingGuide: false,
 
         optHaptic() {
             if (typeof navigator !== 'undefined' && navigator.vibrate) {
@@ -52,9 +53,34 @@ window.calculatorApp = function calculatorApp() {
         },
 
         async fetchRates() {
-            this.status = 'INITIALIZING';
+            const CACHE_KEY = 'pg_rates_cache';
+            const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
+            
             this.errorMessage = '';
-            console.log('🚀 Sync Version: 2.3 - Production');
+            
+            // 1. Try Cache First
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                if (cached) {
+                    const parsed = JSON.parse(cached);
+                    if (parsed.data && parsed.timestamp && (Date.now() - parsed.timestamp < CACHE_TTL)) {
+                        this.data = parsed.data;
+                        this.status = 'SUCCESS';
+                        console.log('⚡ Loaded from Cache (Flash Fast)');
+                        // Fetch in background to keep fresh without blocking UI
+                        this.performLiveSync(CACHE_KEY).catch(() => {}); 
+                        return;
+                    }
+                }
+            } catch(e) {}
+
+            // 2. No valid cache, show loading and fetch
+            this.status = 'INITIALIZING';
+            await this.performLiveSync(CACHE_KEY);
+        },
+
+        async performLiveSync(CACHE_KEY) {
+            console.log('🚀 Sync Version: 2.3 - Production (Live Fetch)');
 
             const clean = (val) => {
                 if (val === undefined || val === null) return 0;
@@ -71,10 +97,9 @@ window.calculatorApp = function calculatorApp() {
                     throw new Error('SILVER_DATA_INCOMPLETE');
                 }
 
-                await new Promise(resolve => setTimeout(resolve, 600)); // Ensure skeleton loading is visible
-
                 this.data = body;
                 this.status = 'SUCCESS';
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ data: body, timestamp: Date.now() }));
                 console.log('✅ Sync: API (Live)');
             } catch (err) {
                 console.warn('⚠️ Sync Fallback:', err.message);
@@ -101,14 +126,16 @@ window.calculatorApp = function calculatorApp() {
                         }
                     };
                     
-                    await new Promise(resolve => setTimeout(resolve, 600)); // Ensure skeleton loading is visible
-                    
                     this.status = 'SUCCESS';
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ data: this.data, timestamp: Date.now() }));
                     console.log('✅ Sync: Direct GSheet (Silver: ' + this.data.rates.rate_silver + ')');
                 } catch (directErr) {
                     console.error('❌ Sync Failed:', directErr);
-                    this.errorMessage = "Sync Failed. Please check internet.";
-                    this.status = 'ERROR';
+                    // Only show error if we don't already have cached data showing
+                    if (this.status !== 'SUCCESS') {
+                        this.errorMessage = "Sync Failed. Please check internet.";
+                        this.status = 'ERROR';
+                    }
                 }
             }
         },
