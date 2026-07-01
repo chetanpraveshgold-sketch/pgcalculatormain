@@ -195,6 +195,21 @@ window.calculatorApp = function calculatorApp() {
             return isNaN(f) ? '...' : this.formatCurrency(f);
         },
 
+        coin22KBreakup() {
+            if (!this.data || !this.data.rates.rate_22k) return null;
+            const b = this.coinWeight * this.data.rates.rate_22k;
+            const making = b * COIN_MAKING_RATE;
+            const gst = (b + making) * GST_RATE;
+            const total = b + making + gst;
+            if (isNaN(total)) return null;
+            return {
+                goldValue: this.formatCurrency(b),
+                making: this.formatCurrency(making),
+                gst: this.formatCurrency(gst),
+                total: this.formatCurrency(total)
+            };
+        },
+
         silverPriceString() {
             const r = this.data?.rates?.rate_silver;
             if (!r) return '...';
@@ -211,6 +226,11 @@ window.calculatorApp = function calculatorApp() {
                 price = this.coinPriceString();
                 if (price === '...' || !price) return null;
                 details = `Item: 24KT Gold Coin\nWeight: ${this.coinWeight}g`;
+            } else if (this.selectedKarat === '22KT_COIN') {
+                const b = this.coin22KBreakup();
+                if (!b) return null;
+                price = b.total;
+                details = `Item: 22KT Gold Coin\nWeight: ${this.coinWeight}g`;
             } else if (this.selectedKarat === 'SILVER') {
                 price = this.silverPriceString();
                 if (price === '...' || !price) return null;

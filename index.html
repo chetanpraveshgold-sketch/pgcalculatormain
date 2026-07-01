@@ -67,7 +67,7 @@
                     <div class="space-y-3">
                         <div class="space-y-1.5">
                             <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-[0.15em] ml-1.5">Select Karat</label>
-                            <div class="relative" x-data="{ open: false, options: [{value: '22KT', label: '22KT'}, {value: '18KT', label: '18KT'}, {value: '24KT', label: '24KT (Gold Coins)'}, {value: 'SILVER', label: 'Silver (Coin)'}] }" @click.outside="open = false">
+                            <div class="relative" x-data="{ open: false, options: [{value: '22KT', label: '22KT Ornaments'}, {value: '18KT', label: '18KT Ornaments'}, {value: '24KT', label: '24KT Gold Coin'}, {value: '22KT_COIN', label: '22KT Gold Coin'}, {value: 'SILVER', label: 'Silver (Coin)'}] }" @click.outside="open = false">
                                 <button type="button" @click="optHaptic(); open = !open" class="premium-input text-left flex justify-between items-center w-full py-3">
                                     <span x-text="options.find(o => o.value === selectedKarat)?.label || 'Select Karat'"></span>
                                     <svg class="w-4 h-4 text-stone-500 transition-transform duration-300" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,12 +95,12 @@
                             </div>
                         </div>
 
-                        <div x-show="selectedKarat !== '24KT' && selectedKarat !== 'SILVER'" class="space-y-1.5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95">
+                        <div x-show="selectedKarat !== '24KT' && selectedKarat !== '22KT_COIN' && selectedKarat !== 'SILVER'" class="space-y-1.5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95">
                             <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-[0.15em] ml-1.5">Weight (grams)</label>
                             <input type="text" inputmode="decimal" placeholder="e.g. 10.250" x-model="weight" class="premium-input py-3">
                         </div>
 
-                        <div x-show="selectedKarat !== '24KT' && selectedKarat !== 'SILVER'" class="space-y-1.5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95">
+                        <div x-show="selectedKarat !== '24KT' && selectedKarat !== '22KT_COIN' && selectedKarat !== 'SILVER'" class="space-y-1.5" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95">
                             <div class="flex justify-between items-end ml-1.5 mb-1 mt-2">
                                 <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-[0.15em]">Making Type</label>
                                 <button type="button" @click="optHaptic(); showMakingGuide = true" class="text-[10px] font-black text-[#c29b27] hover:text-[#a07c1b] uppercase tracking-wider flex items-center gap-1 transition-colors">
@@ -136,7 +136,7 @@
                             </div>
                         </div>
 
-                        <div x-show="selectedKarat === '24KT'" class="space-y-1.5">
+                        <div x-show="selectedKarat === '24KT' || selectedKarat === '22KT_COIN'" class="space-y-1.5">
                             <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-[0.15em] ml-1.5">Coin Weight</label>
                             <div class="grid grid-cols-4 gap-2">
                                 <template x-for="w in COIN_WEIGHTS">
@@ -163,12 +163,15 @@
                         <div class="pt-4 pb-6">
                             <div class="result-container relative z-10">
                                 <p class="text-[10px] font-bold text-[#5c2e2e] uppercase tracking-[0.25em] mb-1.5 opacity-90">Estimated Price</p>
-                                <template x-if="selectedKarat !== '24KT' && selectedKarat !== 'SILVER'">
+                                <template x-if="selectedKarat !== '24KT' && selectedKarat !== '22KT_COIN' && selectedKarat !== 'SILVER'">
                                     <h2 class="text-3xl font-black text-[#391111] tracking-tight transition-all duration-300 ease-out"
                                         x-text="jewelleryPriceString() || '...'"></h2>
                                 </template>
                                 <template x-if="selectedKarat === '24KT'">
                                     <h2 class="text-3xl font-black text-[#391111] tracking-tight transition-all duration-300 ease-out" x-text="coinPriceString()"></h2>
+                                </template>
+                                <template x-if="selectedKarat === '22KT_COIN'">
+                                    <h2 class="text-3xl font-black text-[#391111] tracking-tight transition-all duration-300 ease-out" x-text="coin22KBreakup() ? coin22KBreakup().total : '...'"></h2>
                                 </template>
                                 <template x-if="selectedKarat === 'SILVER'">
                                     <h2 class="text-3xl font-black text-[#391111] tracking-tight transition-all duration-300 ease-out" x-text="silverPriceString()"></h2>
@@ -541,6 +544,21 @@ window.calculatorApp = function calculatorApp() {
             return isNaN(f) ? '...' : this.formatCurrency(f);
         },
 
+        coin22KBreakup() {
+            if (!this.data || !this.data.rates.rate_22k) return null;
+            const b = this.coinWeight * this.data.rates.rate_22k;
+            const making = b * COIN_MAKING_RATE;
+            const gst = (b + making) * GST_RATE;
+            const total = b + making + gst;
+            if (isNaN(total)) return null;
+            return {
+                goldValue: this.formatCurrency(b),
+                making: this.formatCurrency(making),
+                gst: this.formatCurrency(gst),
+                total: this.formatCurrency(total)
+            };
+        },
+
         silverPriceString() {
             const r = this.data?.rates?.rate_silver;
             if (!r) return '...';
@@ -557,6 +575,11 @@ window.calculatorApp = function calculatorApp() {
                 price = this.coinPriceString();
                 if (price === '...' || !price) return null;
                 details = `Item: 24KT Gold Coin\nWeight: ${this.coinWeight}g`;
+            } else if (this.selectedKarat === '22KT_COIN') {
+                const b = this.coin22KBreakup();
+                if (!b) return null;
+                price = b.total;
+                details = `Item: 22KT Gold Coin\nWeight: ${this.coinWeight}g`;
             } else if (this.selectedKarat === 'SILVER') {
                 price = this.silverPriceString();
                 if (price === '...' || !price) return null;
