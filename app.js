@@ -17,9 +17,37 @@ window.calculatorApp = function calculatorApp() {
         showMakingGuide: false,
 
         optHaptic() {
+            // Haptic vibration (mobile)
             if (typeof navigator !== 'undefined' && navigator.vibrate) {
-                try { navigator.vibrate(50); } catch (e) {}
+                try { navigator.vibrate(20); } catch (e) {}
             }
+            
+            // Standard, normal UI tab sound (very subtle tick)
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    if (!window.audioCtx) window.audioCtx = new AudioContext();
+                    const ctx = window.audioCtx;
+                    if (ctx.state === 'suspended') ctx.resume();
+                    
+                    const osc = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.value = 600; 
+                    
+                    // Extremely short, standard click envelope
+                    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.005);
+                    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.015);
+                    
+                    osc.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.02);
+                }
+            } catch (e) {}
         },
 
         init() {
