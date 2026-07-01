@@ -132,6 +132,7 @@ body {
 .text-gold {
     background: linear-gradient(to right, #F5E2A1, #D4AF37, #AA8C2C);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     color: #D4AF37;
 }
@@ -139,6 +140,7 @@ body {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
+    appearance: none;
     margin: 0;
 }
 
@@ -151,6 +153,7 @@ input {
 
 input[type=number] {
     -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 /* Premium WhatsApp Button Animations */

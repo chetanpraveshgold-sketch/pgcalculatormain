@@ -22,7 +22,7 @@ window.calculatorApp = function calculatorApp() {
                 try { navigator.vibrate(20); } catch (e) {}
             }
             
-            // Standard, normal UI tab sound (very subtle tick)
+            // Very soft, gentle UI tap (pure sine wave, no harshness)
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (AudioContext) {
@@ -33,19 +33,20 @@ window.calculatorApp = function calculatorApp() {
                     const osc = ctx.createOscillator();
                     const gainNode = ctx.createGain();
                     
-                    osc.type = 'triangle';
-                    osc.frequency.value = 600; 
+                    osc.type = 'sine'; // Pure, soft tone
+                    osc.frequency.setValueAtTime(350, ctx.currentTime); // Low pitch
+                    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.04); // Gentle drop
                     
-                    // Extremely short, standard click envelope
+                    // Extremely soft volume envelope
                     gainNode.gain.setValueAtTime(0, ctx.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.005);
-                    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.015);
+                    gainNode.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.005); // Very quiet
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
                     
                     osc.connect(gainNode);
                     gainNode.connect(ctx.destination);
                     
                     osc.start(ctx.currentTime);
-                    osc.stop(ctx.currentTime + 0.02);
+                    osc.stop(ctx.currentTime + 0.05);
                 }
             } catch (e) {}
         },
